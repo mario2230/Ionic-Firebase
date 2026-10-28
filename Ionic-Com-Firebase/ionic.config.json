@@ -1,0 +1,7 @@
+{
+  "name": "Ionic-Com-Firebase",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
