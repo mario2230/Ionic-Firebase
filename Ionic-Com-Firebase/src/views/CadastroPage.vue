@@ -10,7 +10,7 @@
         <ion-card>
           <ion-card-header>
             <ion-card-title>Bem Vindo</ion-card-title>
-            <ion-card-subtitle>Logar aqui</ion-card-subtitle>
+            <ion-card-subtitle>Cadastrar aqui</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
             <ion-item>
