@@ -78,12 +78,15 @@
                 </ion-item>
               </ion-list>
 
-              <ion-text v-if="preenchimentoConcluido" class="form-message">
+              <ion-text v-if="erro" color="danger" class="form-message" role="alert">
+                {{ erro }}
+              </ion-text>
+              <ion-text v-if="preenchimentoConcluido" color="success" class="form-message" role="status">
                 Preenchimento concluído.
               </ion-text>
 
-              <ion-button type="submit" expand="block">
-                Concluir preenchimento
+              <ion-button type="submit" expand="block" :disabled="carregando || salvando">
+                {{ salvando ? 'Salvando...' : 'Concluir preenchimento' }}
               </ion-button>
             </form>
           </ion-card-content>
@@ -113,10 +116,11 @@ import {
   IonText,
   IonTitle,
 } from '@ionic/vue';
+import { onIonViewWillEnter } from '@ionic/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { logout } from '@/services/authService';
-import { salvarPerfil } from '@/services/authService';
+import { buscarPerfil, salvarPerfil } from '@/services/authService';
 import { auth } from '@/main';
 
 const router = useRouter();
@@ -128,18 +132,55 @@ const perfil = ref({
   foto_url: '',
 });
 const preenchimentoConcluido = ref(false);
-const user = auth.currentUser;
+const erro = ref('');
+const carregando = ref(false);
+const salvando = ref(false);
 
+onIonViewWillEnter(async () => {
+  const user = auth.currentUser;
+  if (!user) {
+    await router.replace('/tabs/login');
+    return;
+  }
+
+  carregando.value = true;
+  erro.value = '';
+
+  try {
+    const dadosSalvos = await buscarPerfil(user.uid);
+    if (dadosSalvos) {
+      perfil.value = dadosSalvos;
+    }
+  } catch (err) {
+    erro.value = err instanceof Error
+      ? err.message
+      : 'Não foi possível carregar os dados do perfil.';
+  } finally {
+    carregando.value = false;
+  }
+});
 
 async function concluirPreenchimento() {
-  if (!user) return;
+  const user = auth.currentUser;
+  if (!user) {
+    await router.replace('/tabs/login');
+    return;
+  }
 
-  await salvarPerfil(user.uid, {
-    ...perfil.value,
-    dt_nascimento: new Date(perfil.value.dt_nascimento),
-  });
-  preenchimentoConcluido.value = true;
+  salvando.value = true;
+  erro.value = '';
+  preenchimentoConcluido.value = false;
 
+  try {
+    await salvarPerfil(user.uid, perfil.value);
+    preenchimentoConcluido.value = true;
+  } catch (err) {
+    erro.value = err instanceof Error
+      ? err.message
+      : 'Não foi possível salvar os dados do perfil.';
+  } finally {
+    salvando.value = false;
+  }
 }
 
 function deslogar() {

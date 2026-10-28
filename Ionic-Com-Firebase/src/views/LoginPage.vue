@@ -36,6 +36,11 @@
                 <ion-icon name="person-add-outline" slot="start"></ion-icon>
                 Não tem conta? Cadastra-se
               </ion-button>
+
+              <ion-button @click="navigateToSenha" expand="block" fill="outline" :disabled="isLoading">
+                <ion-icon name="person-add-outline" slot="start"></ion-icon>
+                Esqueceu a senha?
+              </ion-button>
             </div>
 
             <ion-item v-if="error" color="danger">
@@ -71,6 +76,7 @@ import {
   IonSpinner,
 } from '@ionic/vue';
 import { login } from '@/services/authService';
+import { F } from 'vue-router/dist/index-u4XkZVDG';
 
 
 const router = useRouter();
@@ -104,5 +110,9 @@ async function logar() {
 
 function navigateToSignUp() {
   router.push('/tabs/cadastro');
+}
+
+function navigateToSenha() {
+  router.push('/tabs/recuperar');
 }
 </script>
