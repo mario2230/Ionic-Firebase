@@ -76,8 +76,6 @@ import {
   IonSpinner,
 } from '@ionic/vue';
 import { login } from '@/services/authService';
-import { F } from 'vue-router/dist/index-u4XkZVDG';
-
 
 const router = useRouter();
 
