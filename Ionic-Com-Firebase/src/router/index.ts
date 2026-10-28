@@ -9,6 +9,11 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/tabs/login'
   },
   {
+    path: '/tabs/perfil',
+    component: () => import('@/views/PerfilPage.vue'),
+    meta: { autenticado: true}
+  },
+  {
     path: '/tabs/',
     component: TabsPage,
     children: [
@@ -28,11 +33,6 @@ const routes: Array<RouteRecordRaw> = [
         path: 'cadastro',
         component: () => import('@/views/CadastroPage.vue')
       },
-      {
-        path: 'perfil',
-        component: () => import('@/views/PerfilPage.vue'),
-        meta: { autenticado: true}
-      }
     ]
   }
 ]
